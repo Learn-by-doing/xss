@@ -14,6 +14,12 @@
 	<script>
 
 		/*
+			To try out these XSS attacks:
+				1) Open the developer tools in your browser (F12).
+				2) Use the JavaScript console to run the following:
+					encodeURIComponent('PASTE THE XSS ATTACK HERE');
+				3) Copy and paste the text from the console to the address bar. Replace the value for the q parameter with the encoded XSS attack text.
+
 			Proof of concept:
 			<img src="does-not-exist" onerror="alert(\'hi\')">
 
