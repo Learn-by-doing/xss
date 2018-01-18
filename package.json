@@ -1,12 +1,12 @@
 {
   "name": "xss",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
-    "express": "4.14.0",
-    "express-session": "1.14.1",
-    "serve-static": "1.11.1"
+    "express": "4.16.2",
+    "express-session": "1.15.6",
+    "serve-static": "1.13.1"
   },
   "devDependencies": {},
   "scripts": {
