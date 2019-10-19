@@ -47,6 +47,7 @@
 
 			var resultsEl = document.querySelector('#results');
 			var html = '';
+			var html2 = '<div>' + window.username + '</div>';
 
 			html += '<p>Your search query:</p>';
 			html += '<pre>' + q + '</pre>';
@@ -58,7 +59,7 @@
 
 			html += '</ul>';
 
-			resultsEl.innerHTML = html;
+			resultsEl.innerHTML = html2;
 		}
 
 		function getQueryParameter(name) {
